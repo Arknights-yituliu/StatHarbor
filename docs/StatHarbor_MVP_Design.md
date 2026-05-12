@@ -28,9 +28,9 @@
 ```json
 {
   "project_key": "quick_test",
-  "category": "arena.daily_reward",
+  "category": "store",
   "version": "v1",
-  "source": "ocr",
+  "source": "manual",
   "captured_at": "2026-05-12T10:30:00Z",
   "payload": {
     "account_id": "main",
@@ -45,9 +45,9 @@
 ```json
 {
   "project_key": "my_game_main",
-  "category": "battle_result",
+  "category": "stage_drop",
   "version": "v1",
-  "source": "log",
+  "source": "ocr",
   "captured_at": "2026-05-12T10:30:00Z",
   "payload": {
     "account_id": "main",
@@ -64,7 +64,7 @@
 {
   "id": "b89f0f38-12e0-437f-97df-59cc6f6a181d",
   "project_key": "my_game_main",
-  "category": "arena.daily_reward",
+  "category": "stage_drop",
   "version": "v1",
   "source": "ocr",
   "captured_at": "2026-05-12T10:30:00Z",
@@ -151,9 +151,9 @@ Content-Type: application/json
 ```json
 {
   "project_key": "quick_test",
-  "category": "arena.daily_reward",
+  "category": "store",
   "version": "v1",
-  "source": "ocr",
+  "source": "manual",
   "captured_at": "2026-05-12T10:30:00Z",
   "payload": {
     "rank": 128,
@@ -175,11 +175,11 @@ Content-Type: application/json
 ```json
 {
   "project_key": "my_game_main",
-  "category": "battle_result",
+  "category": "stage_drop",
   "version": "v1",
-  "source": "log",
+  "source": "ocr",
   "captured_at": "2026-05-12T10:30:00Z",
-  "note": "来自本地日志解析",
+  "note": "来自 OCR 识别",
   "payload": {
     "score": 12800,
     "is_win": true
