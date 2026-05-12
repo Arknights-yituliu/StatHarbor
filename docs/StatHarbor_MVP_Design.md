@@ -66,8 +66,8 @@
 | `id` | `string` | 是 | 后端 | 记录唯一 ID，建议 UUID。 |
 | `project_key` | `string` | 是 | 采集器 | 统计项目标识。 |
 | `category` | `string` | 是 | 采集器 | 数据分类，开放字符串，不做硬枚举。 |
-| `version` | `string` | 否 | 采集器 | 数据结构版本，例如 `v1`。 |
-| `source` | `string` | 否 | 采集器 | 数据来源，例如 `ocr`、`log`、`api`、`manual`。 |
+| `version` | `string` | 是 | 采集器 | 数据结构版本，例如 `v1`。 |
+| `source` | `string` | 是 | 采集器 | 数据来源，例如 `ocr`、`log`、`api`、`manual`。 |
 | `captured_at` | `string` | 是 | 采集器 | 采集时间，ISO 8601 格式。 |
 | `received_at` | `string` | 是 | 后端 | 后端收到时间，ISO 8601 格式。 |
 | `payload_size_bytes` | `number` | 是 | 后端 | `payload` 字节大小。 |
@@ -78,7 +78,8 @@
 
 - `project_key` 和 `category` 建议只使用小写英文、数字、下划线、点号、短横线。
 - `project_key` 和 `category` 建议限制在 `1-128` 个字符。
-- `version`、`source`、`note` 是可选元信息；如果暂时用不上，可以不传。
+- `version` 和 `source` 必须由采集器提交。
+- `note` 是可选元信息；如果暂时用不上，可以不传。
 - `payload` 必须是 JSON 对象，内部字段暂不限制。
 
 ## 4. 项目类型
