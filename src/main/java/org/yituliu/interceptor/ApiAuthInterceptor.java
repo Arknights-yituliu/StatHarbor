@@ -24,7 +24,7 @@ public class ApiAuthInterceptor implements HandlerInterceptor {
     private static final String RATE_LIMIT_MINUTE_PREFIX = "rate_limit:minute:"; // 每分钟限流Redis key前缀
     private static final String RATE_LIMIT_DAILY_PREFIX = "rate_limit:daily:";   // 每日限流Redis key前缀
     private static final long MAX_UNAUTH_PAYLOAD_BYTES = 4096L;              // 未认证用户最大payload：4KB
-    private static final long MAX_AUTH_PAYLOAD_BYTES = 16384L;               // 已认证用户最大payload：16KB
+    private static final long MAX_AUTH_PAYLOAD_BYTES = 8192L;                // 已认证用户最大payload：8KB
     private static final long UNAUTH_PER_MINUTE = 20L;                       // 未认证用户每分钟最大请求数
     private static final long AUTH_PER_MINUTE = 120L;                        // 已认证用户每分钟最大请求数
     private static final long UNAUTH_PER_DAY = 1000L;                        // 未认证用户每日最大记录数
