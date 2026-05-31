@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.yituliu</groupId>
-    <artifactId>endfield-yituliu-backend</artifactId>
+    <artifactId>universal-data-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>endfield-yituliu-backend</name>
-    <description>endfield-yituliu-backend</description>
+    <name>universal-data-backend</name>
+    <description>universal-data-backend</description>
     <url/>
     <licenses>
         <license/>
@@ -138,7 +138,7 @@
     </dependencies>
 
     <build>
-        <finalName>endfield-yituliu-backend</finalName>
+        <finalName>universal-data-backend</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

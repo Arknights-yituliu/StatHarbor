@@ -11,7 +11,7 @@ import org.yituliu.common.utils.Result;
 public class TestController {
     @GetMapping("/")
     public Result<String> startStatus() {
-        return Result.success("后端启动成功");
+        return Result.success("通用数据上传后端启动成功");
     }
 
 

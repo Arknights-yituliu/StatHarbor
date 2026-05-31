@@ -1,6 +1,7 @@
 package org.yituliu.controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yituliu.common.utils.Result;
 import org.yituliu.entity.dto.UniversalDataDTO;
@@ -21,7 +22,7 @@ public class UniversalDataCollectionController {
      * @return
      */
     @PostMapping("/v1/records")
-    public Result<String> uploadUniversalDataCollection(UniversalDataDTO universalDataDTO) {
+    public Result<String> uploadUniversalDataCollection(@RequestBody UniversalDataDTO universalDataDTO) {
         universalDataSerivce.uploadUniversalDataCollection(universalDataDTO);
         return Result.success("上传成功");
     }
