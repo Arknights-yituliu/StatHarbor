@@ -19,6 +19,11 @@ public enum ResultCode {
 	FILE_SIZE_LARGE(10007, "文件过大"),
 	FILE_IS_NULL(10008,"文件为空"),
 	FILE_NOT_IN_EXCEL_FORMAT(10008, "文件格式必须为.xlsx"),
+	PAYLOAD_IS_BLANK(10009, "Payload不能为空"),
+	PROJECT_KEY_IS_BLANK(10010, "ProjectKey不能为空"),
+	CATEGORY_IS_BLANK(10011, "Category不能为空"),
+	VERSION_IS_BLANK(10012, "Version不能为空"),
+	SOURCE_IS_BLANK(10013, "Source不能为空"),
 	OPERATOR_QUANTITY_INVALID(10018,"提交的干员数量需大于6位且小于13位"),
 
 	START_TIME_CANNOT_BE_GREATER_THAN_END_TIME(10019,"开始时间不能大于结束时间"),

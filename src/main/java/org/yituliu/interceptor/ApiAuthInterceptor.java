@@ -19,12 +19,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class ApiAuthInterceptor implements HandlerInterceptor {
 
-    private static final String TOKEN_PREFIX = "Bearer ";                    // 请求头中Token的前缀标识
-    private static final String REDIS_TOKEN_PREFIX = "api:token:";           // Redis中Token存储的key前缀
+    private static final String TOKEN_PREFIX = "yituliu ";                    // 请求头中Token的前缀标识
+    private static final String REDIS_TOKEN_PREFIX = "api:key:";           // Redis中Token存储的key前缀
     private static final String RATE_LIMIT_MINUTE_PREFIX = "rate_limit:minute:"; // 每分钟限流Redis key前缀
     private static final String RATE_LIMIT_DAILY_PREFIX = "rate_limit:daily:";   // 每日限流Redis key前缀
-    private static final long MAX_UNAUTH_PAYLOAD_BYTES = 4096L;              // 未认证用户最大payload：4KB
-    private static final long MAX_AUTH_PAYLOAD_BYTES = 8192L;                // 已认证用户最大payload：8KB
+    private static final long MAX_UNAUTH_PAYLOAD_BYTES = 2048L;              // 未认证用户最大payload：2KB
+    private static final long MAX_AUTH_PAYLOAD_BYTES = 4096L;                // 已认证用户最大payload：4KB
     private static final long UNAUTH_PER_MINUTE = 20L;                       // 未认证用户每分钟最大请求数
     private static final long AUTH_PER_MINUTE = 120L;                        // 已认证用户每分钟最大请求数
     private static final long UNAUTH_PER_DAY = 1000L;                        // 未认证用户每日最大记录数
@@ -42,7 +42,7 @@ public class ApiAuthInterceptor implements HandlerInterceptor {
         boolean authenticated = false;                                        // 标记是否已认证，默认false
         String identifier = getClientIp(request);                            // 默认以客户端IP作为限流标识
 
-        if (authHeader != null && authHeader.startsWith(TOKEN_PREFIX)) {     // 检查是否携带Bearer Token
+        if (authHeader != null && authHeader.startsWith(TOKEN_PREFIX)) {     // 检查是否携带yituliu Token
             String token = authHeader.substring(TOKEN_PREFIX.length()).trim(); // 提取Token值并去除首尾空格
             if (!token.isEmpty()) {                                           // Token不为空时进行Redis校验
                 Object cachedToken = redisTemplate.opsForValue().get(REDIS_TOKEN_PREFIX + token); // 从Redis查询Token是否有效

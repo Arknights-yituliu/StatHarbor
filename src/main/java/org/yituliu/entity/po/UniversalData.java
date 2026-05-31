@@ -15,7 +15,6 @@ public class UniversalData {
     private String source;
     private Date capturedAt;
     private Date receivedAt;
-    private Long payloadSizeBytes;
     private String note;
     private String payload;
 
@@ -23,7 +22,7 @@ public class UniversalData {
     }
 
     public UniversalData(Long id, String projectKey, String category, String version, String source,
-                         Date capturedAt, Date receivedAt, Long payloadSizeBytes, String note, String payload) {
+                         Date capturedAt, Date receivedAt, String note, String payload) {
         this.id = id;
         this.projectKey = projectKey;
         this.category = category;
@@ -31,7 +30,7 @@ public class UniversalData {
         this.source = source;
         this.capturedAt = capturedAt;
         this.receivedAt = receivedAt;
-        this.payloadSizeBytes = payloadSizeBytes;
+
         this.note = note;
         this.payload = payload;
     }
@@ -92,13 +91,7 @@ public class UniversalData {
         this.receivedAt = receivedAt;
     }
 
-    public Long getPayloadSizeBytes() {
-        return payloadSizeBytes;
-    }
-
-    public void setPayloadSizeBytes(Long payloadSizeBytes) {
-        this.payloadSizeBytes = payloadSizeBytes;
-    }
+   
 
     public String getNote() {
         return note;
@@ -126,7 +119,6 @@ public class UniversalData {
                 ", source='" + source + '\'' +
                 ", capturedAt=" + capturedAt +
                 ", receivedAt=" + receivedAt +
-                ", payloadSizeBytes=" + payloadSizeBytes +
                 ", note='" + note + '\'' +
                 ", payload='" + payload + '\'' +
                 '}';

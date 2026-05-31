@@ -13,18 +13,20 @@ public class UniversalDataDTO {
     private String version;
     private String source;
     private String capturedAt;
-    private String payload;
+    private Object payload;
+    private String note;
 
     public UniversalDataDTO() {
     }
 
-    public UniversalDataDTO(String projectKey, String category, String version, String source, String capturedAt, String payload) {
+    public UniversalDataDTO(String projectKey, String category, String version, String source, String capturedAt, Object payload, String note) {
         this.projectKey = projectKey;
         this.category = category;
         this.version = version;
         this.source = source;
         this.capturedAt = capturedAt;
         this.payload = payload;
+        this.note = note;
     }
 
     public String getProjectKey() {
@@ -67,12 +69,20 @@ public class UniversalDataDTO {
         this.capturedAt = capturedAt;
     }
 
-    public String getPayload() {
+    public Object getPayload() {
         return payload;
     }
 
-    public void setPayload(String payload) {
+    public void setPayload(Object payload) {
         this.payload = payload;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     @Override
@@ -84,6 +94,7 @@ public class UniversalDataDTO {
                 ", source='" + source + '\'' +
                 ", capturedAt='" + capturedAt + '\'' +
                 ", payload='" + payload + '\'' +
+                ", note='" + note + '\'' +
                 '}';
     }
 }
