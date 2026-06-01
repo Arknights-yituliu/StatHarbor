@@ -1,11 +1,15 @@
 package org.yituliu.interceptor;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.yituliu.common.enums.ResultCode;
 import org.yituliu.common.exception.ServiceException;
+import org.yituliu.entity.po.ProjectCredential;
+import org.yituliu.mapper.ProjectCredentialMapper;
+import org.yituliu.common.utils.LogUtils;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -27,13 +31,16 @@ public class ApiAuthInterceptor implements HandlerInterceptor {
     private static final long MAX_AUTH_PAYLOAD_BYTES = 4096L;                // 已认证用户最大payload：4KB
     private static final long UNAUTH_PER_MINUTE = 20L;                       // 未认证用户每分钟最大请求数
     private static final long AUTH_PER_MINUTE = 120L;                        // 已认证用户每分钟最大请求数
-    private static final long UNAUTH_PER_DAY = 1000L;                        // 未认证用户每日最大记录数
+    private static final long UNAUTH_PER_DAY = 5000L;                        // 未认证用户每日最大记录数
     private static final long AUTH_PER_DAY = 100000L;                        // 已认证用户每日最大记录数
 
     private final RedisTemplate<String, Object> redisTemplate;               // Redis操作模板，用于计数器缓存
+    private final ProjectCredentialMapper projectCredentialMapper;           // 项目凭证Mapper，用于Redis miss时回源查DB
 
-    public ApiAuthInterceptor(RedisTemplate<String, Object> redisTemplate) {
+    public ApiAuthInterceptor(RedisTemplate<String, Object> redisTemplate,
+                              ProjectCredentialMapper projectCredentialMapper) {
         this.redisTemplate = redisTemplate;                                   // 注入RedisTemplate
+        this.projectCredentialMapper = projectCredentialMapper;               // 注入ProjectCredentialMapper
     }
 
     @Override
@@ -44,9 +51,9 @@ public class ApiAuthInterceptor implements HandlerInterceptor {
 
         if (authHeader != null && authHeader.startsWith(TOKEN_PREFIX)) {     // 检查是否携带yituliu Token
             String token = authHeader.substring(TOKEN_PREFIX.length()).trim(); // 提取Token值并去除首尾空格
-            if (!token.isEmpty()) {                                           // Token不为空时进行Redis校验
-                Object cachedToken = redisTemplate.opsForValue().get(REDIS_TOKEN_PREFIX + token); // 从Redis查询Token是否有效
-                if (cachedToken != null) {                                    // Redis中存在该Token
+            if (!token.isEmpty()) {                                           // Token不为空时进行认证校验
+                String cachedProjectKey = getTokenFromCacheOrDb(token);       // Redis miss时回源DB查询并回写缓存
+                if (cachedProjectKey != null) {                               // Token有效
                     authenticated = true;                                     // 标记为已认证
                     identifier = token;                                       // 以Token作为限流标识
                 }
@@ -58,6 +65,61 @@ public class ApiAuthInterceptor implements HandlerInterceptor {
 
         long maxPayload = authenticated ? MAX_AUTH_PAYLOAD_BYTES : MAX_UNAUTH_PAYLOAD_BYTES; // 根据认证状态选择不同的payload上限
         return checkPayloadSize(request, maxPayload);                        // ③ Payload大小检查
+    }
+
+    /**
+     * Cache-Aside模式：先从Redis查Token，miss时回源DB查询并回写Redis
+     * 
+     * @param token 请求中的secretKey
+     * @return 有效的projectKey，如果Token无效则返回null
+     */
+    private String getTokenFromCacheOrDb(String token) {
+        String redisKey = REDIS_TOKEN_PREFIX + token;
+        String maskedToken = maskToken(token);
+
+        Object cached = redisTemplate.opsForValue().get(redisKey);
+        if (cached != null) {
+            LogUtils.info("[Token认证] Redis命中 | token=" + maskedToken + " | projectKey=" + cached);
+            return cached.toString();
+        }
+
+        LogUtils.warn("[Token认证] Redis未命中，回源查DB | token=" + maskedToken);
+
+        long dbStart = System.currentTimeMillis();
+        ProjectCredential credential = projectCredentialMapper.selectOne(
+                new LambdaQueryWrapper<ProjectCredential>()
+                        .eq(ProjectCredential::getSecretKey, token)
+        );
+        long dbCost = System.currentTimeMillis() - dbStart;
+
+        if (credential != null) {
+            String projectKey = credential.getProjectKey();
+            LogUtils.info("[Token认证] DB查询成功 | token=" + maskedToken
+                    + " | projectKey=" + projectKey + " | db耗时=" + dbCost + "ms");
+
+            try {
+                redisTemplate.opsForValue().set(redisKey, projectKey);
+                LogUtils.info("[Token认证] 回写Redis成功 | key=" + redisKey + " | projectKey=" + projectKey);
+            } catch (Exception e) {
+                LogUtils.error("[Token认证] 回写Redis失败 | key=" + redisKey
+                        + " | projectKey=" + projectKey + " | 原因=" + e.getMessage());
+            }
+
+            return projectKey;
+        }
+
+        LogUtils.warn("[Token认证] Token无效，DB中不存在 | token=" + maskedToken + " | db耗时=" + dbCost + "ms");
+        return null;
+    }
+
+    /**
+     * 脱敏Token，仅显示前4位和后4位
+     */
+    private static String maskToken(String token) {
+        if (token == null || token.length() <= 8) {
+            return "***";
+        }
+        return token.substring(0, 4) + "****" + token.substring(token.length() - 4);
     }
 
     /**

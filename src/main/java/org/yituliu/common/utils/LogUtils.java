@@ -64,7 +64,43 @@ public class LogUtils {
     public static void info(String message, Throwable throwable) {
         getLogger(getCallingClass()).info(message, throwable);
     }
-    
+
+    /**
+     * 记录WARN级别日志
+     * @param message 日志消息
+     */
+    public static void warn(String message) {
+        getLogger(getCallingClass()).warn(message);
+    }
+
+    /**
+     * 记录WARN级别格式化日志
+     * @param format 日志格式字符串
+     * @param arguments 格式化参数
+     */
+    public static void warn(String format, Object... arguments) {
+        getLogger(getCallingClass()).warn(format, arguments);
+    }
+
+    /**
+     * 记录WARN级别日志，包含异常信息
+     * @param message 日志消息
+     * @param throwable 异常对象
+     */
+    public static void warn(String message, Throwable throwable) {
+        getLogger(getCallingClass()).warn(message, throwable);
+    }
+
+    /**
+     * 记录WARN级别日志，支持异常和格式化参数
+     * @param format 日志格式字符串
+     * @param throwable 异常对象
+     * @param arguments 格式化参数
+     */
+    public static void warn(String format, Throwable throwable, Object... arguments) {
+        getLogger(getCallingClass()).warn(format, arguments, throwable);
+    }
+
     /**
      * 记录ERROR级别日志
      * @param message 日志消息
